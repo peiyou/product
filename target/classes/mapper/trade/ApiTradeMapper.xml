@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.btcc.web.trade.mapper.ApiTradeMapper">
+    <select id="queryApiTradeBtcByDay" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+            user_id,
+            sum(amount) as amount,
+            from_unixtime(dateDay,'%Y-%m-%d') as dateline,
+            'btc' as type,
+            'cnybtc' as market
+        from
+        (select
+            t2.user_id,
+            'taker' as `type`,
+            t1.amount,
+            t1.type as side,
+            t1.dateline as dateDay
+        from
+            trade t1 FORCE INDEX(dateline,taker_order_id) left join `order` t2 on t1.taker_order_id = t2.order_id
+        where
+            t2.api = 1
+            and t1.dateline >= unix_timestamp(#{beginDate})
+            and t1.dateline &lt; unix_timestamp(#{endDate})
+
+        union all
+
+        select
+            t2.user_id,
+            'make' as `type`,
+            t1.amount,
+            (case when t1.type = 'buy' then 'sell' else 'buy' end) as side,
+            t1.dateline as dateDay
+        from
+            trade t1 FORCE INDEX(dateline,order_id) left join `order` t2 on t1.order_id = t2.order_id
+        where
+            t2.api = 1
+            and t1.dateline >= unix_timestamp(#{beginDate})
+            and t1.dateline &lt; unix_timestamp(#{endDate})
+
+        union all
+
+        select
+            t2.user_id,
+            'taker' as `type`,
+            t1.amount,
+            t1.type as side,
+            t1.dateline as dateDay
+        from
+            trade t1 FORCE INDEX(dateline,taker_order_id) left join `order_archive` t2 on t1.taker_order_id = t2.order_id
+        where
+            t2.api = 1
+            and t1.dateline >= unix_timestamp(#{beginDate})
+            and t1.dateline &lt; unix_timestamp(#{endDate})
+
+        union all
+
+        select
+            t2.user_id,
+            'make' as `type`,
+            t1.amount,
+            (case when t1.type = 'buy' then 'sell' else 'buy' end) as side,
+            t1.dateline as dateDay
+        from
+            trade t1 FORCE INDEX(dateline,order_id) left join `order_archive` t2 on t1.order_id = t2.order_id
+        where
+            t2.api = 1
+            and t1.dateline >= unix_timestamp(#{beginDate})
+            and t1.dateline &lt; unix_timestamp(#{endDate})
+        ) t group by user_id,dateline
+    </select>
+
+
+    <select id="queryApiTradeLtcByDay" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+            user_id,
+            sum(amount) as amount,
+            from_unixtime(dateDay,'%Y-%m-%d') as dateline,
+            'ltc' as type,
+            'cnyltc' as market
+        from
+        (select
+            t2.user_id,
+            'taker' as `type`,
+            t1.amount,
+            t1.type as side,
+            t1.dateline as dateDay
+        from
+            trade_cnyltc t1 FORCE INDEX(dateline,taker_order_id) left join `order_cnyltc` t2 on t1.taker_order_id = t2.order_id
+        where
+            t2.api = 1
+            and t1.dateline >= unix_timestamp(#{beginDate})
+            and t1.dateline &lt; unix_timestamp(#{endDate})
+
+        union all
+
+        select
+            t2.user_id,
+            'make' as `type`,
+            t1.amount,
+            (case when t1.type = 'buy' then 'sell' else 'buy' end) as side,
+            t1.dateline as dateDay
+        from
+            trade_cnyltc t1 FORCE INDEX(dateline,taker_order_id) left join `order_archive_cnyltc` t2 on t1.order_id = t2.order_id
+        where
+            t2.api = 1
+            and t1.dateline >= unix_timestamp(#{beginDate})
+            and t1.dateline &lt; unix_timestamp(#{endDate})
+
+        union all
+
+        select
+            t2.user_id,
+            'taker' as `type`,
+            t1.amount,
+            t1.type as side,
+            t1.dateline as dateDay
+        from
+            trade_cnyltc t1 FORCE INDEX(dateline,taker_order_id) left join `order_cnyltc` t2 on t1.taker_order_id = t2.order_id
+        where
+            t2.api = 1
+            and t1.dateline >= unix_timestamp(#{beginDate})
+            and t1.dateline &lt; unix_timestamp(#{endDate})
+
+        union all
+
+        select
+            t2.user_id,
+            'make' as `type`,
+            t1.amount,
+            (case when t1.type = 'buy' then 'sell' else 'buy' end) as side,
+            t1.dateline as dateDay
+        from
+            trade_cnyltc t1 FORCE INDEX(dateline,taker_order_id) left join `order_archive_cnyltc` t2 on t1.order_id = t2.order_id
+        where
+            t2.api = 1
+            and t1.dateline >= unix_timestamp(#{beginDate})
+            and t1.dateline &lt; unix_timestamp(#{endDate})
+        ) t group by user_id,dateline
+    </select>
+
+
+
+</mapper>

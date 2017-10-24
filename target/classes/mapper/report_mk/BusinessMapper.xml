@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.btcc.web.report.mk.mapper.BusinessMapper">
+
+
+    <!-- 比特币充值数据-->
+    <select id="payBtcDataTotal"
+            resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        from_unixtime(dateline, '%Y-%m-%d') as date,
+        count(*) as fundbtcCount,
+        sum(amount) as fundbtcAmount,
+        count(DISTINCT user_id) as fundbtcUsers
+        FROM blockchain_txn
+        WHERE dateline &gt;= UNIX_TIMESTAMP(#{startDate}) and dateline &lt; UNIX_TIMESTAMP(#{endDate})
+        AND invalid IS NULL AND currency_type = 'btc'
+        group by DATE
+        ORDER  BY date asc
+    </select>
+
+    <!-- 比特币提现数据-->
+    <select id="takeBtcDataTotal"
+            resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        from_unixtime(dateline, '%Y-%m-%d') AS date,
+        count(*) AS withdrawbtcCount,
+        sum(amount) as withdrawbtcAmount,
+        sum(payfee) as withdrawbtcFee,
+        count(DISTINCT user_id) as withdrawbtcUsers
+        FROM withdrawbtc
+        WHERE dateline &gt;= UNIX_TIMESTAMP(#{startDate}) and dateline &lt; UNIX_TIMESTAMP(#{endDate})
+        AND status = 'success'
+        group by DATE
+        order BY  DATE asc
+    </select>
+
+    <!-- 人民币充值数据-->
+    <select id="payCnyDataTotal"
+            resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        from_unixtime(dateline, '%Y-%m-%d') as date ,
+        count(*) as fundcnyCount,
+        sum(amount) as fundcnyAmount,
+        count(DISTINCT user_id) as fundcnyUsers
+        FROM fundcny
+        WHERE dateline &gt;= UNIX_TIMESTAMP(#{startDate}) and dateline &lt; UNIX_TIMESTAMP(#{endDate})
+        AND transaction_id != 0
+        group by DATE
+        order BY  DATE asc
+    </select>
+
+    <!-- 人民币提现数据 -->
+    <select id="takeCnyDataTotal"
+            resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        from_unixtime(dateline, '%Y-%m-%d') as date ,
+        count(*) as withdrawcnyCount,
+        sum(amount) as withdrawcnyAmount,
+        sum(handling) as withdrawcnyFee,
+        count(DISTINCT user_id) as withdrawcnyUsers
+        FROM withdrawcny
+        WHERE dateline &gt;= UNIX_TIMESTAMP(#{startDate}) and dateline &lt; UNIX_TIMESTAMP(#{endDate})
+        AND status = 'success'
+        group by DATE
+        order BY  DATE asc
+    </select>
+
+    <!--  用户交易数据 -->
+    <select id="userBusinessData"
+            resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        FROM_UNIXTIME(dateline, '%Y-%m-%d') AS date,
+        count(DISTINCT user_id) AS tradeUsers,
+        sum(amount) as tradeAmount
+        FROM trade
+        WHERE dateline &gt;= UNIX_TIMESTAMP(#{startDate}) and dateline &lt; UNIX_TIMESTAMP(#{endDate})
+        and order_id != -1
+        group by DATE
+        order BY DATE asc
+    </select>
+
+
+    <!-- 交易量api-->
+    <select id="amountApiBusinessData"
+            resultType="java.util.Map" parameterType="java.util.Map">
+        <![CDATA[
+            SELECT
+            sum(amount) as apiTradeAmount,
+            from_unixtime(dateline,'%Y-%m-%d') as date
+            FROM (
+            SELECT
+            t1.amount,
+            t1.dateline
+            FROM trade t1
+            LEFT JOIN `order` t2 ON t1.order_id = t2.order_id
+            LEFT JOIN `order` t3 ON t1.taker_order_id = t3.order_id
+            WHERE t1.dateline >= UNIX_TIMESTAMP(#{startDate}) and t1.dateline < UNIX_TIMESTAMP(#{endDate})
+            AND t2.api = 1 AND t3.api = 1
+            UNION
+            SELECT
+            t1.amount,
+            t1.dateline
+            FROM trade t1
+            LEFT JOIN `order_archive` t2 ON t1.order_id = t2.order_id
+            LEFT JOIN `order_archive` t3 ON t1.taker_order_id = t3.order_id
+            WHERE t1.dateline >= UNIX_TIMESTAMP(#{startDate}) and t1.dateline < UNIX_TIMESTAMP(#{endDate})
+            AND t2.api = 1 AND t3.api = 1
+            UNION
+            SELECT
+            t1.amount / 2 AS amount,
+            t1.dateline
+            FROM trade t1
+            LEFT JOIN `order` t2 ON t1.order_id = t2.order_id
+            LEFT JOIN `order` t3 ON t1.taker_order_id = t3.order_id
+            WHERE t1.dateline >= UNIX_TIMESTAMP(#{startDate}) and t1.dateline < UNIX_TIMESTAMP(#{endDate})
+            AND ((t2.api = 1 AND t3.api = 0) OR (t2.api = 1 AND t3.api = 0))
+            UNION
+            SELECT
+            t1.amount / 2 AS amount,
+            t1.dateline
+            FROM trade t1
+            LEFT JOIN `order_archive` t2 ON t1.order_id = t2.order_id
+            LEFT JOIN `order_archive` t3 ON t1.taker_order_id = t3.order_id
+            WHERE t1.dateline >= UNIX_TIMESTAMP(#{startDate}) and t1.dateline < UNIX_TIMESTAMP(#{endDate})
+            AND ((t2.api = 1 AND t3.api = 0) OR (t2.api = 1 AND t3.api = 0))
+            ) t4
+            group by date order by date asc
+        ]]>
+    </select>
+
+
+    <!-- 交易人数api数据  -->
+    <select id="userApiBusinessData"
+            resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        count(DISTINCT user_id) as apiTradeUsers,
+        date
+        FROM
+        (SELECT
+        t2.user_id,
+        t1.date
+        FROM (SELECT
+        FROM_UNIXTIME(dateline, '%Y-%m-%d') AS date,
+        order_id
+        FROM trade
+        WHERE dateline &gt;= UNIX_TIMESTAMP(#{startDate}) AND dateline &lt; UNIX_TIMESTAMP(#{endDate})
+        AND order_id &gt; 0
+        UNION
+        SELECT
+        FROM_UNIXTIME(dateline, '%Y-%m-%d') AS date,
+        taker_order_id AS order_id
+        FROM trade
+        WHERE dateline &gt;= UNIX_TIMESTAMP(#{startDate}) AND dateline &lt; UNIX_TIMESTAMP(#{endDate})
+        AND order_id &gt; 0) t1
+        LEFT JOIN `order` t2 ON t1.order_id = t2.order_id
+        WHERE t2.api = 1
+        UNION
+        SELECT
+        t3.user_id,
+        t1.date
+        FROM (SELECT
+        FROM_UNIXTIME(dateline, '%Y-%m-%d') AS date,
+        order_id
+        FROM trade
+        WHERE dateline &gt;= UNIX_TIMESTAMP(#{startDate}) AND dateline &lt; UNIX_TIMESTAMP(#{endDate})
+        AND order_id &gt; 0
+        UNION
+        SELECT
+        FROM_UNIXTIME(dateline, '%Y-%m-%d') AS date,
+        taker_order_id AS order_id
+        FROM trade
+        WHERE dateline &gt;= UNIX_TIMESTAMP(#{startDate}) AND dateline &lt; UNIX_TIMESTAMP(#{endDate})
+        AND order_id &gt; 0) t1
+        LEFT JOIN `order_archive` t3 ON t1.order_id = t3.order_id
+        WHERE t3.api = 1) t4
+        group by date order by date asc
+    </select>
+
+    <!--  当天新增借贷人民币用户数
+        当天新增借贷人民币量 -->
+    <select id="addBorrowedCnyDataInfo"
+            resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        FROM_UNIXTIME(dateline, '%Y-%m-%d') AS date,
+        count(DISTINCT user_id) as borrowedCnyUsers,
+        sum(`borrowed_cny`) as borrowedCnyAmount
+        FROM margin
+        WHERE dateline &gt;= UNIX_TIMESTAMP(#{startDate}) and dateline &lt; UNIX_TIMESTAMP(#{endDate}) AND borrowed_cny &gt; 0
+        group by date order by date asc
+    </select>
+
+
+    <!--  当天新增借贷BTC用户数
+        当天新增借贷BTC量 -->
+    <select id="addBorrowedBtcDataInfo"
+            resultType="java.util.Map" parameterType="java.util.Map">
+        <![CDATA[
+            SELECT
+             FROM_UNIXTIME(dateline, '%Y-%m-%d') AS date,
+             count(DISTINCT user_id) as borrowedBtcUsers,
+             sum(`borrowed_btc`) as borrowedBtcAmount
+             FROM margin
+             WHERE dateline >= UNIX_TIMESTAMP(#{startDate}) and dateline < UNIX_TIMESTAMP(#{endDate}) AND borrowed_btc > 0
+             group by date order by date asc
+        ]]>
+    </select>
+
+
+    <!--  借贷利息（已收取） -->
+    <select id="borrowedInterestDataInfo"
+            resultType="java.util.Map" parameterType="java.util.Map">
+        <![CDATA[
+            SELECT
+             FROM_UNIXTIME(dateline, '%Y-%m-%d') AS date,
+             sum(cny) as borrowedCnyInterestCollected,
+             sum(btc) as borrowedBtcInterestCollected
+             FROM transaction
+             WHERE dateline >= UNIX_TIMESTAMP(#{startDate}) and dateline < UNIX_TIMESTAMP(#{endDate}) AND type = 'collect_interest'
+             group by date order by date asc
+        ]]>
+    </select>
+
+
+
+</mapper>

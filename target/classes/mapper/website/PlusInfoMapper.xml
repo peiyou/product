@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.btcc.web.report.website.mapper.PlusInfoMapper">
+    <select id="getLastSundryCoinOfPrice" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+            t.price,
+            t.symbol
+	    from
+            trades t inner join
+            (select
+                max(id) as id,
+                symbol
+            from
+                trades
+            group  by symbol) t1 on t.id = t1.id
+    </select>
+
+    <select id="getUserBalance" resultType="java.util.Map" fetchSize="-2147483648" parameterType="java.util.Map" resultOrdered="true">
+        select
+            account as user_id,
+            sum(case when currency = 'BCC' then total_balances * #{bccPrice}
+            when currency = 'ETH' then total_balances * #{ethPrice}
+            when currency = 'ICO' then total_balances * #{icoPrice}
+            else total_balances end) as cny
+        from
+            (
+            select
+                account,
+                currency,
+                sum(cash) total_balances
+            from accountbalances
+            where  account &lt;= 948132
+            group by account,currency
+
+            UNION ALL
+
+            select
+            	user_id as account,
+                currency,
+                sum(amount) as total_balances
+            from
+                bttx_coin_inout.digital_asset_deposit_withdraw
+            where
+                status in (2,3,4)
+                and user_id &lt;= 948132
+            group by user_id,currency
+        ) t
+        group by account
+    </select>
+
+    <select id="getPlusPlatformOfStock" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+            currency,
+            sum(total_balances) as total_balances
+        from (
+            select
+                currency,
+                sum(new_balance) total_balances
+            from
+                accountbalancechangelogs c
+                inner join (
+                    select
+                        max(t.id) id
+                    from accountbalancechangelogs t inner join users u on u.account = t.account
+                    where date_add(t.timestamp, INTERVAL 8 hour) &lt; #{endDate}
+                        and group_id != 'system'
+                        and t.account not in (
+                        ${company}
+                        )
+                        and t.account &lt;= 948132
+                    group by t.account, t.currency
+                ) m on c.id = m.id
+            group by currency
+
+            union all
+
+            select
+                currency,
+                sum(amount) as total_balances
+            from
+                bttx_coin_inout.digital_asset_deposit_withdraw
+            where
+                status in (2,3,4)
+                and date_add(created_at,interval 8 hour) &lt;  #{endDate}
+                and user_id not in (
+                ${company}
+                )
+                and user_id &lt;= 948132
+            group by currency ) t group by currency
+    </select>
+
+</mapper>

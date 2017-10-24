@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.btcc.web.report.mk.mapper.UserPhpMapper">
+    <select id="queryRegUserRange" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            min(user_id) as min_user_id,
+            max(user_id) as max_user_id
+        FROM users
+        WHERE user_regdate >= UNIX_TIMESTAMP(#{startDate}) and user_regdate &lt; UNIX_TIMESTAMP(#{endDate})
+    </select>
+
+    <select id="queryRegUserNumber" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+          count(*) as reg_user_num
+        FROM users
+        WHERE user_regdate >= UNIX_TIMESTAMP(#{startDate}) AND user_regdate &lt; UNIX_TIMESTAMP(#{endDate})
+    </select>
+</mapper>

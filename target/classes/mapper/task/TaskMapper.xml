@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.btcc.web.task.mapper.TaskMapper">
+    <select id="selectScheduleByJobId" resultType="com.btcc.web.task.entity.ScheduleJob" parameterType="java.lang.Long">
+        SELECT
+          `job_id` as jobId,
+          `job_name` as jobName,
+          `job_group` as jobGroup,
+          `job_status` as jobStatus,
+          `cron_expression` as  cronExpression,
+          `bean_class` as beanClass,
+          `method_name` as methodName,
+          `is_concurrent` as  isConcurrent,
+          `description` as description,
+          `create_date` as createDate,
+          `update_date` as updateDate,
+          `is_param` as isParam,
+          `json_param` as jsonParam,
+          `start_time` as startTime,
+          `end_time` as endTime
+
+        FROM
+          sys_schedule
+        WHERE
+          job_id = #{jobId}
+    </select>
+
+    <select id="selectScheduleByRun" resultType="com.btcc.web.task.entity.ScheduleJob">
+        SELECT
+          `job_id` as jobId,
+          `job_name` as jobName,
+          `job_group` as jobGroup,
+          `job_status` as jobStatus,
+          `cron_expression` as  cronExpression,
+          `bean_class` as beanClass,
+          `method_name` as methodName,
+          `is_concurrent` as  isConcurrent,
+          `description` as description,
+          `create_date` as createDate,
+          `update_date` as updateDate,
+          `is_param` as isParam,
+          `json_param` as jsonParam,
+          `start_time` as startTime,
+          `end_time` as endTime
+        FROM
+          sys_schedule
+        WHERE
+          job_status = 1
+    </select>
+
+    <select id="selectScheduleAll" resultType="com.btcc.web.task.entity.ScheduleJob">
+        SELECT
+            `job_id` as jobId,
+            `job_name` as jobName,
+            `job_group` as jobGroup,
+            `job_status` as jobStatus,
+            `cron_expression` as  cronExpression,
+            `bean_class` as beanClass,
+            `method_name` as methodName,
+            `is_concurrent` as  isConcurrent,
+            `description` as description,
+            `create_date` as createDate,
+            `update_date` as updateDate,
+            `is_param` as isParam,
+            `json_param` as jsonParam,
+            `start_time` as startTime,
+            `end_time` as endTime
+        FROM
+            sys_schedule
+    </select>
+
+    <insert id="insertSchedule" parameterType="com.btcc.web.task.entity.ScheduleJob"
+            useGeneratedKeys="true" keyProperty="job_id">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="jobId">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sys_schedule (
+              job_name,
+              job_group,
+              <if test="jobStatus != null">
+                job_status,
+              </if>
+              cron_expression,
+              bean_class,
+              method_name,
+              <if test="isConcurrent != null">
+                is_concurrent,
+              </if>
+              <if test="description != null">
+                description,
+              </if>
+              <if test="isParam != null">
+                is_param,
+              </if>
+              <if test="jsonParam != null">
+                json_param,
+              </if>
+              <if test="startTime != null">
+                  start_time,
+              </if>
+              <if test="endTime != null">
+                  end_time,
+              </if>
+              create_date,
+              update_date
+          )
+        values (
+          #{jobName},
+          #{jobGroup},
+            <if test="jobStatus != null">
+                #{jobStatus},
+            </if>
+          #{cronExpression},
+          #{beanClass},
+          #{methodName},
+            <if test="isConcurrent != null">
+                #{isConcurrent},
+            </if>
+            <if test="description != null">
+                #{description},
+            </if>
+            <if test="isParam != null">
+                #{isParam},
+            </if>
+            <if test="jsonParam != null">
+               #{jsonParam},
+            </if>
+            <if test="startTime != null">
+                UNIX_TIMESTAMP(#{startTime}),
+            </if>
+            <if test="endTime != null">
+                UNIX_TIMESTAMP(#{#{endTime}),
+            </if>
+          UNIX_TIMESTAMP(#{createDate}),
+          UNIX_TIMESTAMP(#{updateDate})
+        )
+    </insert>
+
+    <update id="updateSchedule" parameterType="com.btcc.web.task.entity.ScheduleJob">
+        UPDATE sys_schedule
+        <set>
+            <if test="jobName != null">
+                job_name = #{jobName},
+            </if>
+            <if test="jobGroup != null">
+                job_group = #{jobGroup},
+            </if>
+            <if test="jobStatus != null">
+                job_status = #{jobStatus},
+            </if>
+            <if test="cronExpression != null">
+                cron_expression = #{cronExpression},
+            </if>
+            <if test="beanClass != null">
+                bean_class = #{beanClass},
+            </if>
+            <if test="methodName != null">
+                method_name = #{methodName},
+            </if>
+            <if test="isConcurrent != null">
+                is_concurrent = #{isConcurrent},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="updateDate != null">
+                update_date = UNIX_TIMESTAMP(#{updateDate}),
+            </if>
+            <if test="isParam != null">
+                is_param = #{isParam},
+            </if>
+            <if test="jsonParam != null">
+                json_param = #{jsonParam},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
+            </if>
+        </set>
+        WHERE
+          job_id = #{jobId}
+    </update>
+
+    <delete id="deleteScheduleByJobId" parameterType="java.lang.Long">
+        delete from sys_schedule
+        WHERE  job_id = #{jobId}
+    </delete>
+</mapper>

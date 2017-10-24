@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.btcc.web.system.mapper.SystemMapper">
+    <!-- sys_user-->
+    <insert id="insertSysUser"
+            parameterType="com.btcc.web.system.entity.SysUser" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sys_user
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="disable != null">
+                disable,
+            </if>
+            <if test="remark != null" >
+                remark,
+            </if>
+            <if test="username != null" >
+                username,
+            </if>
+        </trim>
+        VALUE
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="disable != null">
+                #{disable},
+            </if>
+            <if test="remark != null" >
+                #{remark},
+            </if>
+            <if test="username != null" >
+                #{username},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSysUserById"
+            parameterType="com.btcc.web.system.entity.SysUser">
+        update sys_user
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="disable != null">
+                disable = #{disable},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+        </set>
+        where
+        id = #{id}
+    </update>
+
+    <delete id="deleteSysUserById" parameterType="com.btcc.web.system.entity.SysUser">
+        delete from sys_user
+        where id = #{id}
+    </delete>
+
+    <select id="querySysUser"
+            parameterType="java.util.Map"
+            resultType="com.btcc.web.system.entity.SysUser">
+        select
+        id as id,
+        username as username,
+        disable as disable,
+        remark as remark
+        FROM
+        sys_user
+        <where>
+            <if test="username != null">
+                AND username LIKE '%${username}%'
+            </if>
+            <if test="disable != null">
+                AND disable = #{disable}
+            </if>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <!-- sys_role-->
+    <insert id="insertSysRole"
+            parameterType="com.btcc.web.system.entity.SysRole" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sys_role
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="remark != null" >
+                remark,
+            </if>
+            <if test="role != null" >
+                role,
+            </if>
+        </trim>
+        VALUE
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="remark != null" >
+                #{remark},
+            </if>
+            <if test="role != null" >
+                #{role},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSysRoleById"
+            parameterType="com.btcc.web.system.entity.SysRole">
+        update sys_role
+        <set>
+            <if test="role != null">
+                role = #{role},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+        </set>
+        where
+        id = #{id}
+    </update>
+
+    <delete id="deleteSysRoleById" parameterType="com.btcc.web.system.entity.SysUser">
+        delete from sys_role
+        where id = #{id}
+    </delete>
+
+    <select id="querySysRole"
+            parameterType="java.util.Map"
+            resultType="com.btcc.web.system.entity.SysRole">
+        select
+        id as id,
+        role as role,
+        remark as remark
+        FROM
+        sys_role
+        <where>
+            <if test="role != null">
+                AND role LIKE '%${role}%'
+            </if>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectRoleByUserId" resultType="com.btcc.web.system.entity.SysRole" parameterType="java.lang.Integer">
+        SELECT t.user_id as userId,t.role_id as id,r.role FROM sys_user_role t LEFT JOIN
+        sys_role r ON t.role_id = r.id
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- sys_user_role -->
+    <insert id="insertSysUserRole"
+            parameterType="com.btcc.web.system.entity.SysUserRole" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_user_role(user_id,role_id) VALUE (#{userId},#{roleId})
+    </insert>
+
+    <delete id="deleteSysUserRoleByUserId" parameterType="com.btcc.web.system.entity.SysUserRole">
+        delete from sys_user_role
+        where
+        1 = 1
+        <if test="userId != null">
+            and user_id = #{userId}
+        </if>
+        <if test="roleId != null">
+            and role_id = #{roleId}
+        </if>
+    </delete>
+
+    <select id="querySysUserRole"
+            parameterType="java.util.Map"
+            resultType="com.btcc.web.system.entity.SysUserRole">
+        select
+        user_id as userId,
+        role_id as roleId
+        FROM
+        sys_user_role
+        <where>
+            <if test="userId != null">
+                AND user_id LIKE #{userId}
+            </if>
+            <if test="roleId != null">
+                AND role_id LIKE #{roleId}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- sys_menu -->
+    <insert id="insertSysMenu"
+            parameterType="com.btcc.web.system.entity.SysMenu" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sys_menu
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="remark != null" >
+                remark,
+            </if>
+            <if test="menuName != null" >
+                menu_name,
+            </if>
+            <if test="url != null" >
+                url,
+            </if>
+            <if test="ioc != null" >
+                ioc,
+            </if>
+            <if test="disable != null" >
+                disable,
+            </if>
+            <if test="parentId != null" >
+                parent_id,
+            </if>
+            <if test="level != null" >
+                level,
+            </if>
+            <if test="sequence != null" >
+                sequence,
+            </if>
+        </trim>
+        VALUE
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="remark != null" >
+                #{remark},
+            </if>
+            <if test="menuName != null" >
+                #{menuName},
+            </if>
+            <if test="url != null" >
+                #{url},
+            </if>
+            <if test="ioc != null" >
+                #{ioc},
+            </if>
+            <if test="disable != null" >
+                #{disable},
+            </if>
+            <if test="parentId != null" >
+                #{parentId},
+            </if>
+            <if test="level != null" >
+                #{level},
+            </if>
+            <if test="sequence != null" >
+                #{sequence},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSysMenuById"
+            parameterType="com.btcc.web.system.entity.SysMenu">
+        update sys_menu
+        <set>
+            <if test="remark != null" >
+                remark = #{remark},
+            </if>
+            <if test="menuName != null" >
+                menu_name = #{menuName},
+            </if>
+            <if test="url != null" >
+                url = #{url},
+            </if>
+            <if test="ioc != null" >
+                ioc = #{ioc},
+            </if>
+            <if test="disable != null" >
+                disable = #{disable},
+            </if>
+            <if test="parentId != null" >
+                parent_id = #{parentId},
+            </if>
+            <if test="level != null" >
+                level = #{level},
+            </if>
+            <if test="sequence != null" >
+                sequence = #{sequence},
+            </if>
+        </set>
+        where
+        id = #{id}
+    </update>
+
+    <delete id="deleteSysMenuById" parameterType="com.btcc.web.system.entity.SysMenu">
+        delete from sys_menu
+        where id = #{id}
+    </delete>
+
+    <select id="querySysMenu"
+            parameterType="java.util.Map"
+            resultType="com.btcc.web.system.entity.SysMenu">
+        select
+        id as id,
+        menu_name as menuName,
+        remark as remark,
+        url as url,
+        disable as disable,
+        parent_id as parentId,
+        level as level,
+        sequence as sequence
+        FROM
+        sys_menu
+        <where>
+            <if test="menuName != null">
+                AND menu_name LIKE '%${menuName}%'
+            </if>
+            <if test="url != null">
+                AND url LIKE '%${url}%'
+            </if>
+            <if test="disable != null">
+                AND disable = disable
+            </if>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="parentId != null">
+                AND parent_id = #{parentId}
+            </if>
+        </where>
+        order by sequence desc ,id asc
+    </select>
+
+    <!-- 查询menu为目录的菜单-->
+    <select id="querySysMenuByDirectory"
+            resultType="com.btcc.web.system.entity.SysMenu">
+        select
+        id as id,
+        menu_name as menuName,
+        remark as remark,
+        url as url,
+        disable as disable,
+        parent_id as parentId,
+        level as level,
+        sequence as sequence
+        FROM
+        sys_menu
+        where (url IS null or url = '')
+    </select>
+
+    <!-- sys_role_menu -->
+    <insert id="insertSysRoleMenu"
+            parameterType="com.btcc.web.system.entity.SysMenuRole" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_role_menu(role_id,menu_id) VALUE (#{roleId},#{menuId})
+    </insert>
+
+    <delete id="deleteSysRoleMenuId" parameterType="com.btcc.web.system.entity.SysMenuRole">
+        delete from sys_role_menu
+        where 1=1
+        <if test="roleId != null">
+            and role_id = #{roleId}
+        </if>
+        <if test="menuId != null">
+            and  menu_id = #{menuId}
+        </if>
+    </delete>
+
+    <select id="querySysRoleMenu"
+            parameterType="java.util.Map"
+            resultType="com.btcc.web.system.entity.SysMenuRole">
+        select
+        role_id as roleId,
+        menu_id as menuId
+        FROM
+        sys_role_menu
+        <where>
+            <if test="roleId != null">
+                AND role_id = #{roleId}
+            </if>
+            <if test="menuId != null">
+                AND menu_id = #{menuId}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="queryBuildReport" parameterType="java.util.Map"
+            resultType="com.btcc.web.system.entity.BuildReport" >
+        SELECT
+        id,
+        params,
+        remark,
+        menu_name as menuName
+        FROM
+        build_report
+        WHERE 1=1
+        <if test="id != null">
+            and id = #{id}
+        </if>
+        <if test="menuName != null &amp; menuName != ''">
+            and menu_name LIKE '%${menuName}%'
+        </if>
+    </select>
+
+    <!-- build -->
+    <insert id="insertBuildReport"
+            parameterType="com.btcc.web.system.entity.BuildReport" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into build_report(params,remark,menu_name) VALUE (#{params},#{remark},#{menuName})
+    </insert>
+
+    <update id="updateBuildReport"
+            parameterType="com.btcc.web.system.entity.BuildReport">
+        update build_report
+        <set>
+            <if test="params != null">
+                params = #{params},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="menuName != null">
+                menu_name = #{menuName},
+            </if>
+        </set>
+        where
+        id = #{id}
+    </update>
+
+    <delete id="deleteBuildReport" parameterType="com.btcc.web.system.entity.BuildReport">
+        delete from build_report
+        where  id = #{id}
+    </delete>
+
+    <select id="queryBuildReportOfMenuById" parameterType="java.lang.Integer"
+            resultType="com.btcc.web.system.entity.SysMenu">
+        SELECT
+        m.id
+        FROM
+        build_report b left join sys_menu m
+        ON  CONCAT('/baseController/',b.id,'/index') = m.url
+        WHERE
+        b.id = #{id}
+    </select>
+
+    <select id="queryWorkFlowSql" parameterType="java.util.Map" resultType="com.btcc.web.system.entity.WorkFlowSql">
+        SELECT
+        *
+        FROM
+        work_flow_sql
+        WHERE
+        1=1
+        <if test="id != null">
+            and id = #{id}
+        </if>
+        <if test="name != null">
+            and name like '%${name}%'
+        </if>
+    </select>
+
+    <update id="updateWorkFlowSql" parameterType="com.btcc.web.system.entity.WorkFlowSql">
+        UPDATE  work_flow_sql
+        <set>
+            <if test="name != null">name = #{name} ,</if>
+            <if test="data != null">data = #{data} ,</if>
+            <if test="remark != null">remark = #{remark} ,</if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="deleteWorkFlowSql" parameterType="com.btcc.web.system.entity.WorkFlowSql">
+        DELETE FROM work_flow_sql WHERE id = #{id}
+    </delete>
+    <insert id="insertWorkFlowSql" parameterType="com.btcc.web.system.entity.WorkFlowSql"
+            useGeneratedKeys="true">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT  into work_flow_sql(
+        <if test="name != null">name,</if>
+        <if test="data != null">data,</if>
+        <if test="remark != null">remark</if>
+        ) value(
+        <if test="name != null">#{name},</if>
+        <if test="data != null">#{data},</if>
+        <if test="remark != null">#{remark}</if>
+        )
+    </insert>
+
+</mapper>

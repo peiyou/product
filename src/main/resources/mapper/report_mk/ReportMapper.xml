@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.btcc.web.report.mk.mapper.ReportMapper">
+
+    <insert id="insertBusinessReportDay" parameterType="com.btcc.web.report.mk.entity.BusinessReportDay"
+            >
+        insert into business_report_day
+            <include refid="insertSql"/>
+    </insert>
+
+    <sql id="updateSql">
+      <set>
+        <if test="fundbtcCount != null">
+            fundbtc_count = #{fundbtcCount} ,
+        </if>
+
+          <if test="fundbtcAmount != null">
+              fundbtc_amount = #{fundbtcAmount} ,
+          </if>
+
+          <if test="fundbtcUsers != null">
+              fundbtc_users = #{fundbtcUsers} ,
+          </if>
+
+          <if test="withdrawbtcCount != null">
+              withdrawbtc_count = #{withdrawbtcCount} ,
+          </if>
+
+          <if test="withdrawbtcAmount != null">
+              withdrawbtc_amount = #{withdrawbtcAmount} ,
+          </if>
+
+          <if test="withdrawbtcFee != null">
+              withdrawbtc_fee = #{withdrawbtcFee} ,
+          </if>
+
+          <if test="withdrawbtcUsers != null">
+              withdrawbtc_users = #{withdrawbtcUsers} ,
+          </if>
+
+          <if test="fundcnyCount != null">
+              fundcny_count = #{fundcnyCount} ,
+          </if>
+
+          <if test="fundcnyAmount != null">
+              fundcny_Amount = #{fundcnyAmount} ,
+          </if>
+
+          <if test="fundcnyUsers != null">
+              fundcny_users = #{fundcnyUsers} ,
+          </if>
+
+
+          <if test="withdrawcnyCount != null">
+              withdrawcny_Count = #{withdrawcnyCount} ,
+          </if>
+
+
+          <if test="withdrawcnyAmount != null">
+              withdrawcny_amount = #{withdrawcnyAmount} ,
+          </if>
+
+          <if test="withdrawcnyFee != null">
+              withdrawcny_fee = #{withdrawcnyFee} ,
+          </if>
+
+
+          <if test="withdrawcnyUsers != null">
+              withdrawcny_users = #{withdrawcnyUsers} ,
+          </if>
+
+
+          <if test="tradeUsers != null">
+              trade_users = #{tradeUsers} ,
+          </if>
+
+
+          <if test="tradeAmount != null">
+              trade_amount = #{tradeAmount} ,
+          </if>
+
+          <if test="apiTradeAmount != null">
+              api_trade_amount = #{apiTradeAmount} ,
+          </if>
+
+          <if test="apiTradeUsers != null">
+              api_trade_users = #{apiTradeUsers} ,
+          </if>
+
+          <if test="borrowedCnyUsers != null">
+              borrowed_cny_users = #{borrowedCnyUsers} ,
+          </if>
+
+          <if test="borrowedCnyAmount != null">
+              borrowed_cny_amount = #{borrowedCnyAmount} ,
+          </if>
+
+          <if test="borrowedBtcUsers != null">
+              borrowed_btc_users = #{borrowedBtcUsers} ,
+          </if>
+
+          <if test="borrowedBtcAmount != null">
+              borrowed_btc_amount = #{borrowedBtcAmount} ,
+          </if>
+
+          <if test="borrowedCnyInterestCollected != null">
+              borrowed_cny_interest_collected = #{borrowedCnyInterestCollected} ,
+          </if>
+
+          <if test="borrowedBtcInterestCollected != null">
+              borrowed_btc_interest_collected = #{borrowedBtcInterestCollected} ,
+          </if>
+
+      </set>
+    </sql>
+
+    <sql id="insertSql">
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="statisDate != null">
+                statis_date,
+            </if>
+            <if test="fundbtcCount != null">
+                fundbtc_count ,
+            </if>
+
+            <if test="fundbtcAmount != null">
+                fundbtc_amount  ,
+            </if>
+
+            <if test="fundbtcUsers != null">
+                fundbtc_users  ,
+            </if>
+
+            <if test="withdrawbtcCount != null">
+                withdrawbtc_count   ,
+            </if>
+
+            <if test="withdrawbtcAmount != null">
+                withdrawbtc_amount   ,
+            </if>
+
+            <if test="withdrawbtcFee != null">
+                withdrawbtc_fee =  ,
+            </if>
+
+            <if test="withdrawbtcUsers != null">
+                withdrawbtc_users   ,
+            </if>
+
+            <if test="fundcnyCount != null">
+                fundcny_count   ,
+            </if>
+
+            <if test="fundcnyAmount != null">
+                fundcny_Amount   ,
+            </if>
+
+            <if test="fundcnyUsers != null">
+                fundcny_users   ,
+            </if>
+
+
+            <if test="withdrawcnyCount != null">
+                withdrawcny_Count  ,
+            </if>
+
+
+            <if test="withdrawcnyAmount != null">
+                withdrawcny_amount   ,
+            </if>
+
+            <if test="withdrawcnyFee != null">
+                withdrawcny_fee   ,
+            </if>
+
+
+            <if test="withdrawcnyUsers != null">
+                withdrawcny_users   ,
+            </if>
+
+
+            <if test="tradeUsers != null">
+                trade_users  ,
+            </if>
+
+
+            <if test="tradeAmount != null">
+                trade_amount  ,
+            </if>
+
+            <if test="apiTradeAmount != null">
+                api_trade_amount ,
+            </if>
+
+            <if test="apiTradeUsers != null">
+                api_trade_users ,
+            </if>
+
+            <if test="borrowedCnyUsers != null">
+                borrowed_cny_users   ,
+            </if>
+
+            <if test="borrowedCnyAmount != null">
+                borrowed_cny_amount   ,
+            </if>
+
+            <if test="borrowedBtcUsers != null">
+                borrowed_btc_users   ,
+            </if>
+
+            <if test="borrowedBtcAmount != null"> borrowed_btc_amount   , </if>
+
+            <if test="borrowedCnyInterestCollected != null"> borrowed_cny_interest_collected   , </if>
+
+            <if test="borrowedBtcInterestCollected != null">  borrowed_btc_interest_collected   ,  </if>
+        </trim>
+        VALUE
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="statisDate != null">
+                UNIX_TIMESTAMP(#{statisDate}),
+            </if>
+
+            <if test="fundbtcCount != null"> #{fundbtcCount} , </if>
+
+            <if test="fundbtcAmount != null"> #{fundbtcAmount} , </if>
+
+            <if test="fundbtcUsers != null"> #{fundbtcUsers} , </if>
+
+            <if test="withdrawbtcCount != null">  #{withdrawbtcCount} , </if>
+
+            <if test="withdrawbtcAmount != null"> #{withdrawbtcAmount} , </if>
+
+            <if test="withdrawbtcFee != null"> #{withdrawbtcFee} , </if>
+
+            <if test="withdrawbtcUsers != null"> #{withdrawbtcUsers} , </if>
+
+            <if test="fundcnyCount != null">  #{fundcnyCount} ,  </if>
+
+            <if test="fundcnyAmount != null"> fundcny_Amount = #{fundcnyAmount} ,  </if>
+
+            <if test="fundcnyUsers != null">  #{fundcnyUsers} , </if>
+
+
+            <if test="withdrawcnyCount != null"> #{withdrawcnyCount} , </if>
+
+
+            <if test="withdrawcnyAmount != null">  withdrawcny_amount = #{withdrawcnyAmount} , </if>
+
+            <if test="withdrawcnyFee != null"> #{withdrawcnyFee} , </if>
+
+
+            <if test="withdrawcnyUsers != null"> #{withdrawcnyUsers} , </if>
+
+
+            <if test="tradeUsers != null"> #{tradeUsers} , </if>
+
+
+            <if test="tradeAmount != null"> #{tradeAmount} , </if>
+
+            <if test="apiTradeAmount != null"> #{apiTradeAmount} , </if>
+
+            <if test="apiTradeUsers != null"> #{apiTradeUsers} , </if>
+
+            <if test="borrowedCnyUsers != null"> #{borrowedCnyUsers} , </if>
+
+            <if test="borrowedCnyAmount != null"> #{borrowedCnyAmount} , </if>
+
+            <if test="borrowedBtcUsers != null"> #{borrowedBtcUsers} , </if>
+
+            <if test="borrowedBtcAmount != null"> #{borrowedBtcAmount} , </if>
+
+            <if test="borrowedCnyInterestCollected != null"> #{borrowedCnyInterestCollected} , </if>
+
+            <if test="borrowedBtcInterestCollected != null"> #{borrowedBtcInterestCollected} , </if>
+        </trim>
+    </sql>
+
+    <sql id="queryProperty">
+        FROM_UNIXTIME(statis_date,'%Y-%m-%d')  as  statisDate,
+        fundbtc_count  as  fundbtcCount ,
+        fundbtc_amount  as  fundbtcAmount,
+        fundbtc_users  as  fundbtcUsers ,
+        withdrawbtc_count  as  withdrawbtcCount,
+        withdrawbtc_amount  as  withdrawbtcAmount,
+        withdrawbtc_fee  as  withdrawbtcFee  ,
+        withdrawbtc_users  as  withdrawbtcUsers,
+        fundcny_count  as  fundcnyCount,
+        fundcny_amount  as  fundcnyAmount,
+        fundcny_users  as  fundcnyUsers,
+        withdrawcny_count  as  withdrawcnyCount,
+        withdrawcny_amount  as  withdrawcnyAmount,
+        withdrawcny_fee  as  withdrawcnyFee,
+        withdrawcny_users  as  withdrawcnyUsers,
+        trade_users   as  tradeUsers,
+        trade_amount  as  tradeAmount,
+        api_trade_amount  as  apiTradeAmount ,
+        api_trade_users  as  apiTradeUsers,
+        borrowed_cny_users  as  borrowedCnyUsers,
+        borrowed_cny_amount  as  borrowedCnyAmount,
+        borrowed_btc_users  as  borrowedBtcUsers,
+        borrowed_btc_amount  as  borrowedBtcAmount,
+        borrowed_cny_interest_collected  as  borrowedCnyInterestCollected,
+        borrowed_btc_interest_collected  as  borrowedBtcInterestCollected
+    </sql>
+
+    <update id="updateBusinessReportDay" parameterType="com.btcc.web.report.mk.entity.BusinessReportDay">
+            UPDATE business_report_day
+            <include refid="updateSql" />
+            WHERE statis_date = UNIX_TIMESTAMP(#{statisDate})
+                  AND TYPE  = 1
+    </update>
+
+    <select id="queryBusinessReportDayByStatisDate" parameterType="java.lang.String"
+        resultType="int"
+    >
+        <![CDATA[
+          SELECT count(1) as count
+          FROM business_report_day
+          WHERE statis_date = UNIX_TIMESTAMP(#{statisDate})
+          AND TYPE  = 1
+        ]]>
+
+    </select>
+
+    <delete id="deleteBusinessReportDayByStatisDate" parameterType="java.lang.String" >
+        DELETE
+        FROM
+          business_report_day
+        WHERE
+          statis_date = UNIX_TIMESTAMP(#{statisDate})
+          AND TYPE  = 1
+    </delete>
+
+
+    <select id="queryBusinessReportDay" parameterType="java.util.Map"
+            resultType="com.btcc.web.report.mk.entity.BusinessReportDay"
+            >
+            select
+               <include refid="queryProperty" />
+            <![CDATA[
+                FROM
+                  business_report_day
+                WHERE
+                  statis_date >= UNIX_TIMESTAMP(#{startDate})
+                AND
+                  statis_date <= UNIX_TIMESTAMP(#{endDate})
+                AND  TYPE  = 1
+            ]]>
+    </select>
+
+
+    <select id="queryMaxStatisDateForBusinessReportDay"
+            resultType="java.lang.String">
+        <![CDATA[
+                select
+                  FROM_UNIXTIME(max(statis_date),'%Y-%m-%d') as statisDate
+                FROM
+                  business_report_day
+                WHERE
+                  TYPE  = 1
+            ]]>
+    </select>
+
+
+    <delete id="deleteUserSnapshot">
+        delete from user_snapshot
+        where dateline = unix_timestamp(DATE_FORMAT(now(),'%Y-%m-%d'))
+    </delete>
+
+    <insert id="insertUserSnapshot"
+            parameterType="java.lang.String">
+        <![CDATA[
+                insert into
+                  user_snapshot(dateline,username,btc,cny)
+                select
+                    unix_timestamp(DATE_FORMAT(now(),'%Y-%m-%d')),
+                    username,
+                    cny,
+                    btc
+                from user
+                where user_id in (${userIds})
+            ]]>
+    </insert>
+
+
+    <delete id="deleteUserApiTradeDataByDay" parameterType="java.util.Map" >
+        DELETE
+          FROM user_api_trade_data
+        WHERE
+          dateline >= unix_timestamp(#{beginDate})
+          and dateline &lt; unix_timestamp(#{endDate})
+          and type = #{type}
+          and market = #{market}
+    </delete>
+
+    <insert id="insertUserApiTradeData" parameterType="java.util.Map">
+        insert into user_api_trade_data(user_id,amount,dateline,type,market) values
+        <foreach collection="list" separator="," item="i" open="" close="" >
+            (#{i.user_id},#{i.amount},unix_timestamp(#{i.dateline}),#{i.type},#{i.market})
+        </foreach>
+    </insert>
+
+
+    <insert id="insertOperationData" parameterType="java.util.Map">
+        INSERT into day_operation_data(dateline,reguser_num,register_time_deposit_of_user_num,deposit_btc_user_num,deposit_btc_num,deposit_btc_total,withdraw_btc_user_num,
+        withdraw_btc_num,withdraw_btc_total,withdraw_btc_fee,deposit_cny_user_num,deposit_cny_num,deposit_cny_total,withdraw_cny_user_num,withdraw_cny_num,withdraw_cny_total,
+        withdraw_cny_fee,trade_btc_user_num,trade_btc_total,trade_ltc_user_num,trade_ltc_total,trade_btc_of_cny_fee,trade_ltc_of_cny_fee,trade_btc_fee,trade_ltc_fee)
+        VALUES (unix_timestamp(#{dateline}),#{register_num},#{register_time_deposit_of_user_num},#{deposit_btc_user_num},#{deposit_btc_num},#{deposit_btc_total},#{withdraw_btc_user_num},
+        #{withdraw_btc_num},#{withdraw_btc_total},#{withdraw_btc_fee},#{deposit_cny_user_num},#{deposit_cny_num},#{deposit_cny_total},#{withdraw_cny_user_num},#{withdraw_cny_num},#{withdraw_cny_total},
+        #{withdraw_cny_fee},#{trade_btc_user_num},#{trade_btc_total},#{trade_ltc_user_num},#{trade_ltc_total},#{trade_btc_of_cny_fee},#{trade_ltc_of_cny_fee},#{trade_btc_fee},#{trade_ltc_fee})
+    </insert>
+
+</mapper>

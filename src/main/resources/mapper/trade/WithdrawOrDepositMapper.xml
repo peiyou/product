@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.btcc.web.trade.mapper.WithdrawOrDepositMapper">
+
+    <select id="withdrawBTC" resultType="java.util.Map" parameterType="java.util.Map">
+        <![CDATA[
+        select
+                 t.withdrawbtc_id  as id,
+                 t.user_id,
+                t1.name,
+                t1.phone,
+                t1.phone_country,
+                t2.value,
+                if(t2.value=1,'大陆用户','国际港澳台用户') as account_type,
+                t.`amount`,
+                 from_unixtime(t.dateline + 8 * 3600,'%Y-%m-%d %H:%i:%s') as bj_time
+         from
+                 withdrawbtc t inner join userdata t1 on t.user_id = t1.user_id
+                 left join user_config t2 on t2.user_id = t.user_id and t2.name='account_type'
+         where
+                 status = 'pending'
+                 and t.dateline < unix_timestamp(#{dateline}) - 8*3600 order by  bj_time
+        ]]>
+    </select>
+
+
+    <select id="withdrawLTC" resultType="java.util.Map" parameterType="java.util.Map">
+        <![CDATA[
+         select
+                t.withdrawltc_id  as id,
+                t.user_id,
+                t1.name,
+                t1.phone,
+                t1.phone_country,
+                t2.value,
+                if(t2.value=1,'大陆用户','国际港澳台用户') as account_type,
+                t.`amount`,
+                 from_unixtime(t.dateline + 8 * 3600,'%Y-%m-%d %H:%i:%s') as bj_time
+         from
+                 withdrawltc t inner join userdata t1 on t.user_id = t1.user_id
+                 left join user_config t2 on t2.user_id = t.user_id and t2.name='account_type'
+         where
+                 status = 'pending'
+                 and t.dateline < unix_timestamp(#{dateline}) - 8*3600 order by  bj_time
+        ]]>
+    </select>
+
+    <select id="depositBTC" resultType="java.util.Map" parameterType="java.util.Map">
+        <![CDATA[
+         select
+            t.txn_id as id,
+            t.user_id,
+            t1.name,
+            t1.phone,
+            t1.phone_country,
+            if(t1.id_type=1,'身份证用户','其它证件用户') as id_type,
+            t2.value,
+            if(t2.value=1,'大陆用户','国际港澳台用户') as account_type,
+            t.amount,
+            t.currency_type,
+            from_unixtime(t.dateline + 8 *3600) as bj_time
+        from
+            blockchain_txn t inner join userdata t1 on t.user_id = t1.user_id
+             left join user_config t2 on t2.user_id = t.user_id and t2.name='account_type'
+        where
+            t.dateline >= unix_timestamp('2017-09-27 15:00:00') - 8*3600
+            and t.currency_type = 'btc'
+            and t.xo = 0 order by t.dateline
+        ]]>
+    </select>
+
+
+    <select id="depositLTC" resultType="java.util.Map" parameterType="java.util.Map">
+        <![CDATA[
+         select
+            t.txn_id as id,
+            t.user_id,
+            t1.name,
+            t1.phone,
+            t1.phone_country,
+            if(t1.id_type=1,'身份证用户','其它证件用户') as id_type,
+            t2.value,
+            if(t2.value=1,'大陆用户','国际港澳台用户') as account_type,
+            t.amount,
+            t.currency_type,
+            from_unixtime(t.dateline + 8 *3600) as bj_time
+        from
+            blockchain_txn t inner join userdata t1 on t.user_id = t1.user_id
+             left join user_config t2 on t2.user_id = t.user_id and t2.name='account_type'
+        where
+            t.dateline >= unix_timestamp('2017-09-27 15:00:00') - 8*3600
+            and t.currency_type = 'ltc'
+            and t.xo = 0 order by t.dateline
+        ]]>
+    </select>
+
+    <select id="userInfo" resultType="java.util.Map" parameterType="java.lang.Integer">
+        <![CDATA[
+         select
+            t.user_id,
+            t.name,
+            t.phone,
+            t.phone_country,
+            if(t.id_type=1,'身份证用户','其它证件用户') as id_type,
+            t1.value,
+            if(t1.value=1,'大陆用户','国际港澳台用户') as account_type
+         from
+                userdata t left join user_config t1 on t1.user_id = t.user_id and t1.name='account_type'
+         where
+                t.user_id in
+        ]]>
+        <foreach collection="list" close=")" open="(" separator="," item="item">
+            #{item}
+        </foreach>
+
+    </select>
+</mapper>

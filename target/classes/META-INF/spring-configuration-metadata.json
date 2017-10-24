@@ -1,0 +1,57 @@
+{
+  "groups": [
+    {
+      "name": "datasource",
+      "type": "com.btcc.conf.DatasourceProperties",
+      "sourceType": "com.btcc.conf.DatasourceProperties"
+    },
+    {
+      "name": "url",
+      "type": "com.btcc.conf.UrlProperties",
+      "sourceType": "com.btcc.conf.UrlProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "datasource.btcchina-mk",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "com.btcc.conf.DatasourceProperties"
+    },
+    {
+      "name": "datasource.btcchina-phpbb",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "com.btcc.conf.DatasourceProperties"
+    },
+    {
+      "name": "datasource.bttx",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "com.btcc.conf.DatasourceProperties"
+    },
+    {
+      "name": "datasource.dashboard",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "com.btcc.conf.DatasourceProperties"
+    },
+    {
+      "name": "datasource.prog",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "com.btcc.conf.DatasourceProperties"
+    },
+    {
+      "name": "datasource.report",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "com.btcc.conf.DatasourceProperties"
+    },
+    {
+      "name": "datasource.spotusd",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "com.btcc.conf.DatasourceProperties"
+    },
+    {
+      "name": "url.exclude",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.btcc.conf.UrlProperties"
+    }
+  ],
+  "hints": []
+}
