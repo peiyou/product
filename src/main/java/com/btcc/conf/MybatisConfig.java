@@ -1,7 +1,6 @@
 package com.btcc.conf;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
-import com.btcc.datasource.ProgDataSource;
 import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -9,16 +8,14 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jndi.JndiObjectFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.util.Map;
 import java.util.Properties;
@@ -33,41 +30,6 @@ public class MybatisConfig{
     @Autowired
     private Environment env;
 
-    @Bean(name = "btcchinaMkDataSource")
-    public DataSource btcchinaMkDataSource() throws Exception{
-        Properties props = new Properties();
-        Map<String,String> map = DatasourceProperties.btcchinaMk;
-        return getDataSource(props, map);
-    }
-
-    @Bean(name = "btcchinaPhpbbDataSource")
-    public DataSource btcchinaPhpbbDataSource() throws Exception{
-        Properties props = new Properties();
-        Map<String,String> map = DatasourceProperties.btcchinaPhpbb;
-        return getDataSource(props, map);
-    }
-
-
-    @Bean(name = "progDataSource")
-    public DataSource progDataSource() throws Exception{
-        Properties props = new Properties();
-        Map<String,String> map = DatasourceProperties.prog;
-        return getDataSource(props, map);
-    }
-
-    @Bean(name = "spotusdDataSource")
-    public DataSource spotusdDataSource() throws Exception{
-        Properties props = new Properties();
-        Map<String,String> map = DatasourceProperties.spotusd;
-        return getDataSource(props, map);
-    }
-
-    @Bean(name = "bttxDataSource")
-    public DataSource bttxDataSource() throws Exception {
-        Properties props = new Properties();
-        Map<String,String> map = DatasourceProperties.bttx;
-        return getDataSource(props, map);
-    }
 
     /**
      * 注意@Primary注解， 表示默认的数据源，不加时，会报异常，只能有一个
@@ -76,6 +38,7 @@ public class MybatisConfig{
      */
     @Bean(name = "reportDataSource")
     @Primary
+    @DependsOn({"datasourceProperties"})
     public DataSource reportDataSource() throws Exception{
         Properties props = new Properties();
         Map<String,String> map = DatasourceProperties.report;
@@ -104,23 +67,6 @@ public class MybatisConfig{
      * -
      * - 指定mapper文件的路径；
      */
-    @Bean(name="btcchinaMkSqlSessionFactory")
-    public SqlSessionFactory btcchinaMkSqlSessionFactory() throws Exception{
-
-        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setDataSource(btcchinaMkDataSource());
-        return getSqlSessionFactory(bean);
-
-    }
-
-    @Bean(name="btcchinaPhpbbSqlSessionFactory")
-    public SqlSessionFactory btcchinaPhpbbSqlSessionFactory() throws Exception{
-
-        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setDataSource(btcchinaPhpbbDataSource());
-        //分页插件
-        return getSqlSessionFactory(bean);
-    }
 
     @Bean(name="reportSqlSessionFactory")
     public SqlSessionFactory reportSqlSessionFactory() throws Exception{
@@ -131,32 +77,6 @@ public class MybatisConfig{
         return getSqlSessionFactory(bean);
     }
 
-    @Bean(name="progSqlSessionFactory")
-    public SqlSessionFactory progSqlSessionFactory() throws Exception{
-
-        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setDataSource(progDataSource());
-        //分页插件
-        return getSqlSessionFactory(bean);
-    }
-
-    @Bean(name="spotusdSqlSessionFactory")
-    public SqlSessionFactory spotusdSqlSessionFactory() throws Exception{
-
-        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setDataSource(spotusdDataSource());
-        //分页插件
-        return getSqlSessionFactory(bean);
-    }
-
-    @Bean(name="bttxSqlSessionFactory")
-    public SqlSessionFactory bttxSqlSessionFactory() throws Exception{
-
-        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setDataSource(bttxDataSource());
-        //分页插件
-        return getSqlSessionFactory(bean);
-    }
 
     private SqlSessionFactory getSqlSessionFactory(SqlSessionFactoryBean bean) {
         //分页插件

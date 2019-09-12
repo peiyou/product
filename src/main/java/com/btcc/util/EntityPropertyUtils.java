@@ -1,13 +1,11 @@
 package com.btcc.util;
 
-import com.btcc.web.report.mk.entity.BusinessReportDay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Created by peiyou on 2016/11/1.

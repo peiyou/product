@@ -45,7 +45,7 @@ public class DatasourceProperties {
         return report;
     }
 
-    public  void setReport(Map<String, String> report) {
+    public void setReport(Map<String, String> report) {
         DatasourceProperties.report = report;
     }
 

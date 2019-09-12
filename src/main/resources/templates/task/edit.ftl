@@ -135,6 +135,8 @@
 <![endif]-->
 <script type="text/javascript" >
     $(function(){
+        $("#beginDate").hide();
+        $("#endDate").hide();
         $('#beginDate').datetimepicker({
             minView:2,
             endDate:new Date(),

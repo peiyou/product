@@ -5,7 +5,6 @@ import com.btcc.web.login.entity.LoginLog;
 import com.btcc.web.login.entity.Menu;
 import com.btcc.web.login.entity.Role;
 import com.btcc.web.login.entity.User;
-import com.btcc.web.login.mapper.LoginBtcchinaMkMapper;
 import com.btcc.web.login.mapper.LoginMapper;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
@@ -47,8 +46,7 @@ public class LoginService {
     private String authenticationHost = "api-staging.btcc.com";
     @Autowired
     LoginMapper loginMapper;
-    @Autowired
-    LoginBtcchinaMkMapper loginBtcchinaMkMapper;
+
 
     public boolean basicLogin(User user) throws Exception {
         HttpHost targetHost = new HttpHost(authenticationHost, 443, "https");
@@ -129,10 +127,6 @@ public class LoginService {
         user.setMenus(menus);
         request.getSession().setAttribute(LoginConstant.CURRENT_LOGIN_USER,user);
         request.getSession().setAttribute(LoginConstant.CURRENT_LOGIN_USER_MENU,urls);
-    }
-
-    public int selectUserByOptKey(String username){
-       return loginBtcchinaMkMapper.selectUserByOptKey(username);
     }
 
 

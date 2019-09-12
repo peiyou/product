@@ -195,19 +195,9 @@ public class MultipleFlowJsonUtil {
         params.put("run_sql",sql);
         if((ReportConstant.report).equals(dbaName)){
             return SpringUtils.getBean(ReportDatabaseSourceMapper.class).queryData(params);
-        }else if((ReportConstant.btcchina_mk).equals(dbaName)){
-            return SpringUtils.getBean(MkDatabaseSourceMapper.class).queryData(params);
-        }else if((ReportConstant.btcchina_phpbb).equals(dbaName)){
-            return SpringUtils.getBean(PhpbbDatabaseSourceMapper.class).queryData(params);
-        }else if(ReportConstant.prog.equals(dbaName)){
-            return SpringUtils.getBean(ProgDatabaseSourceMapper.class).queryData(params);
-        }else if(ReportConstant.spotusd.equals(dbaName)){
-            return SpringUtils.getBean(SpotusdDatabaseSourceMapper.class).queryData(params);
-        }else if(ReportConstant.bttx.equals(dbaName)){
-            return SpringUtils.getBean(BttxDatabaseSourceMapper.class).queryData(params);
-        }else{
-            return SpringUtils.getBean(MkDatabaseSourceMapper.class).queryData(params);
         }
+
+        return SpringUtils.getBean(ReportDatabaseSourceMapper.class).queryData(params);
     }
 
     public static void insertData(String sql,String dbaName,Map<String,Object> params){

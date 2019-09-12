@@ -56,6 +56,7 @@
                         <th>名称</th>
                         <th>url</th>
                         <th>注备</th>
+                        <th>操作</th>
                     </tr>
                     </thead>
                     <tbody id="dataBody">

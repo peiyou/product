@@ -27,23 +27,9 @@ public class BaseService {
 
     private Logger logger = LoggerFactory.getLogger(BaseService.class);
 
-    @Autowired
-    MkDatabaseSourceMapper mkDatabaseSourceMapper;
-
-    @Autowired
+    @Autowired(required = false)
     ReportDatabaseSourceMapper reportDatabaseSourceMapper;
 
-    @Autowired
-    PhpbbDatabaseSourceMapper phpbbDatabaseSourceMapper;
-
-    @Autowired
-    ProgDatabaseSourceMapper progDatabaseSourceMapper;
-
-    @Autowired
-    SpotusdDatabaseSourceMapper spotusdDatabaseSourceMapper;
-
-    @Autowired
-    BttxDatabaseSourceMapper bttxDatabaseSourceMapper;
 
 
     public PageInfo<Map<String,Object>> queryData(Map<String,Object> param){
@@ -59,18 +45,6 @@ public class BaseService {
         List<Map<String,Object>> list = null;
         if((ReportConstant.report).equals(param.get("datasource_run_sql"))){
             list = reportDatabaseSourceMapper.queryData(param);
-        }else if((ReportConstant.btcchina_mk).equals(param.get("datasource_run_sql"))){
-            list = mkDatabaseSourceMapper.queryData(param);
-        }else if((ReportConstant.btcchina_phpbb).equals(param.get("datasource_run_sql"))){
-            list = phpbbDatabaseSourceMapper.queryData(param);
-        }else if(ReportConstant.prog.equals(param.get("datasource_run_sql"))){
-            list = progDatabaseSourceMapper.queryData(param);
-        }else if(ReportConstant.spotusd.equals(param.get("datasource_run_sql"))){
-            list = spotusdDatabaseSourceMapper.queryData(param);
-        }else if(ReportConstant.bttx.equals(param.get("datasource_run_sql"))){
-            list = bttxDatabaseSourceMapper.queryData(param);
-        }else {
-            list = mkDatabaseSourceMapper.queryData(param);
         }
 
         pageInfo = new PageInfo<>(list);
